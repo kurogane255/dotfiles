@@ -11,6 +11,15 @@ mkdir -p "$(dirname "$LOGFILE")"
 # %% にして strftime に通し、リテラルの % に戻す。
 LOGFILE_ESCAPED="${LOGFILE//%/%%}"
 
-# ANSIエスケープシーケンス(色・カーソル制御・OSC)を除去してから書き込む
-STRIP='s/\x1B\[[0-9;?]*[a-zA-Z]//g; s/\x1B\][^\x07\x1B]*(\x07|\x1B\\\\)//g; s/\x1B[()][A-Za-z0-9]//g; s/\x1B[=>]//g; s/\r//g'
-tmux pipe-pane -o -t "$TARGET" "sed -u -E '$STRIP' >> '$LOGFILE_ESCAPED'"
+# ANSIエスケープシーケンス(色・カーソル制御・OSC)を除去し、
+# プログレスバー等の "\r" による上書きは改行として残しつつ、
+# 通常の "\r\n" 改行はそのまま1行にまとめて書き込む
+STRIP='
+    s/\x1B\[[0-9;?]*[a-zA-Z]//g;
+    s/\x1B\][^\x07\x1B]*(\x07|\x1B\\\\)//g;
+    s/\x1B[()][A-Za-z0-9]//g;
+    s/\x1B[=>]//g;
+    s/\r(?!\n)/\n/g;
+    s/\r\n/\n/g;
+'
+tmux pipe-pane -o -t "$TARGET" "perl -pe '$STRIP' >> '$LOGFILE_ESCAPED'"
