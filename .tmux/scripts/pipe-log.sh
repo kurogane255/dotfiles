@@ -10,4 +10,7 @@ mkdir -p "$(dirname "$LOGFILE")"
 # pane_id 等に含まれる % がエスケープされないと日時指定子として壊れる。
 # %% にして strftime に通し、リテラルの % に戻す。
 LOGFILE_ESCAPED="${LOGFILE//%/%%}"
-tmux pipe-pane -o -t "$TARGET" "cat >> '$LOGFILE_ESCAPED'"
+
+# ANSIエスケープシーケンス(色・カーソル制御・OSC)を除去してから書き込む
+STRIP='s/\x1B\[[0-9;?]*[a-zA-Z]//g; s/\x1B\][^\x07\x1B]*(\x07|\x1B\\\\)//g; s/\x1B[()][A-Za-z0-9]//g; s/\x1B[=>]//g'
+tmux pipe-pane -o -t "$TARGET" "sed -u -E '$STRIP' >> '$LOGFILE_ESCAPED'"
