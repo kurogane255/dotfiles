@@ -1,0 +1,9 @@
+[Unit]
+Description=cc-tmux の Remote Control 監視と復旧
+
+[Service]
+Type=oneshot
+Environment=PATH=/home/kurogane/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/kurogane/cc-tmux-rc-watch.sh
+# セッション数ぶん sleep 30 が入り得るので、余裕を持たせる
+TimeoutStartSec=600

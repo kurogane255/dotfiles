@@ -1,0 +1,26 @@
+# cc-tmux が立てる Claude Code セッションの一覧。
+#
+# 1 行 1 セッション名。名前は ~/<名前> のディレクトリ名と一致させる。
+# ここに書いた通りに cc-tmux-sync が enable / disable / start / stop する。
+# 書き換えた時点で cc-tmux-sync.path が拾って反映する。
+#
+# 2026-09-24: セッションは zero2 (192.168.0.112) に戻した。
+# zero2 の不通はアイドルサスペンドが原因で、sleep.target の mask で対処済み。
+#
+# このホストは待機。repo と setup の実体は置いてあるので、
+# 下のコメントを外せばそのまま引き取れる。
+# **zero2 側の同名の行を消してから外すこと。**
+# 両方で同じ名前を立てると、同じ repo に 2 つのセッションがぶら下がる。
+
+#OpenShift
+#azure
+#azure-study
+#gomine
+#local-code-agent
+#openshift-ai-study
+#rust-study
+#rustmine
+#setup
+
+# michibiki は rustmine が引き継いだ (GitHub の rustmine に同じ SHA で入っている)。
+#michibiki

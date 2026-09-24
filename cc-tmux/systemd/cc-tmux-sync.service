@@ -1,0 +1,14 @@
+[Unit]
+Description=cc-tmux のセッション一覧を設定ファイルに合わせる
+Documentation=file:%h/.config/cc-tmux/sessions
+
+[Service]
+Type=oneshot
+# claude は ~/.local/bin にあるので明示的に PATH を通す
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/cc-tmux-sync.sh
+# enable/start をセッション数ぶん回すので余裕を持たせる
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target

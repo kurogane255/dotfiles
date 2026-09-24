@@ -1,0 +1,26 @@
+[Unit]
+Description=Claude Code tmux session: %i
+Documentation=man:tmux(1)
+After=network-online.target
+# ~/<セッション名> が無ければ起動しない
+ConditionPathIsDirectory=%h/%i
+# 落ち続ける場合は5分に5回で諦める（無限再起動ループ防止）
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+# claude は ~/.local/bin にあるので明示的に PATH を通す
+Environment=PATH=/home/kurogane/.local/bin:/usr/local/bin:/usr/bin:/bin
+# 専用ソケット %i の残骸があれば掃除（失敗は無視）
+ExecStartPre=-/usr/bin/tmux -L %i kill-server
+# セッションを起動したあと、それが生きている間ブロックし続ける。
+# tmux は起動後すぐ抜けるため、これが無いと systemd に監視対象が無く Restart= が効かない。
+ExecStart=/bin/sh -c '/home/kurogane/cc-tmux.sh "$1" || exit 1; while /usr/bin/tmux -L "$1" has-session -t "$1" 2>/dev/null; do sleep 5; done; exit 1' _ %i
+# このセッション専用サーバーだけを落とす（他セッションに影響しない）
+ExecStop=-/usr/bin/tmux -L %i kill-server
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

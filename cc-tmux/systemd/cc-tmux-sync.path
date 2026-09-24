@@ -1,0 +1,10 @@
+[Unit]
+Description=cc-tmux のセッション一覧の変更を監視する
+
+[Path]
+# 一覧を書き換えたらその場で反映する。systemctl を打つ必要は無い。
+PathModified=%h/.config/cc-tmux/sessions
+Unit=cc-tmux-sync.service
+
+[Install]
+WantedBy=default.target

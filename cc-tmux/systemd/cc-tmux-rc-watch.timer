@@ -1,0 +1,12 @@
+[Unit]
+Description=cc-tmux の Remote Control を5分ごとに確認する
+
+[Timer]
+# 起動直後は cc-tmux 自身がまだ落ち着いていないので3分待つ
+OnBootSec=3min
+OnUnitActiveSec=5min
+AccuracySec=30s
+Unit=cc-tmux-rc-watch.service
+
+[Install]
+WantedBy=timers.target
